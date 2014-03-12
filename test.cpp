@@ -1,71 +1,31 @@
 #include <iostream>
-#include <ctime>
-#include <cstdlib>
 #include "heap.hpp"
 #include "vertex.hpp"
 #include "graph.hpp"
-#define KEY_TYPE int
-#define VNUM 6000
+#define KEY_TYPE double
 using namespace std;
-void init_graph1(graph<KEY_TYPE,VNUM> g0);
-void init_graph2(graph<KEY_TYPE,VNUM> g0);
+
 
 int main(){
 	
-//	heap<vertex<KEY_TYPE>,VNUM,value_fun<KEY_TYPE>,KEY_TYPE> h0;
+	heap<vertex<KEY_TYPE>,5000,value_fun<KEY_TYPE>,KEY_TYPE> h0;
 	
-	graph<KEY_TYPE,VNUM> g1,g2;
-	init_graph1(g1);
-	init_graph2(g2);
+	int i,j;
 
-	return 0;
-}
+	graph<KEY_TYPE,1000> g1;
 
-void init_graph1(graph<KEY_TYPE,VNUM> g0)
-{	
-	int i,count,ran_num;
+	vertex<KEY_TYPE> n1(1,11.2),n2(2,22),n3(3,16),n4(4,6),n5(5,126),n6(6,16),n7(7,18),n8(8,28);
 
-	for(i = 1 ; i <= VNUM ; i++)
-		g0.add_vertex(i,0);
+	g1.add_vertex(1,11.2);
+	g1.add_vertex(2,22);
+	g1.add_vertex(3,16);
+	g1.add_vertex(4,6);
+	g1.add_vertex(5,126);
+	g1.add_vertex(6,16);
+	g1.add_vertex(7,18);
+	g1.add_vertex(8,28);
 
-	srand((unsigned)time(0));
-
-	for (i = 1 ; i <= VNUM ; i++)
-	{
-		count = 0;
-		while (count < 6) 
-		{
-			ran_num = (rand() % VNUM) +1;
-			if (!g0.is_edge(i,ran_num)) 
-			{
-	//			cout <<"edge: " << i<<" "<<  ran_num << endl;
-				g0.add_edge(i,ran_num,2);
-				count++;
-			}
-		}
-	}
-
-return;
-}
-void init_graph2(graph<KEY_TYPE,VNUM> g0)
-{
-	int i,j,count,ran_num;
-	for (i = 1 ; i <= VNUM ; i++)
-		for (j = i ; j <= VNUM ; j++)
-		{
-			ran_num = rand() % 5;
-			//20% possibility
-			if (ran_num == 0 && i != j) 
-			{
-			//	cout <<"edge: " << i<<" , "<<  j<< endl;
-				g0.add_edge(i,j,2);
-			count=1;
-			}
-		}
-
-return;
-}
-/*	g1.add_edge(2,3,2.2);
+	g1.add_edge(2,3,2.2);
 	g1.add_edge(1,3,3);
 	g1.add_edge(4,7,4);
 
@@ -98,4 +58,6 @@ return;
 		cout <<"after remove:"<< endl;
 		for (i=1;i<=h0.size();i++) cout << h0.index(i).get_name()<< " , "<<h0.index(i).get_key() <<endl;
 	}
-*/
+
+	return 0;
+}

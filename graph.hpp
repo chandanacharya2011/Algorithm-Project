@@ -69,22 +69,20 @@ int graph<key_type,GRAPH_SIZE>::add_edge(int v1,int v2,key_type wt)
 	adj_node<key_type>* node1 = new adj_node<key_type>();
 	node1->name = v1;
 	node1->weight = wt;
-	node1->adj_v = NULL;
 	
 	adj_node<key_type>* node2 = new adj_node<key_type>();
 	node2->name = v2;
 	node2->weight = wt;
-	node2->adj_v = NULL;
 	
 	struct adj_node<key_type>* temp;
 	
-	temp = &adj_table[v1];
-	while(temp->adj_v != NULL) temp = temp->adj_v;
-	temp->adj_v = node2;
+	temp = adj_table[v1].adj_v;
+	adj_table[v1].adj_v = node2;
+	node2->adj_v = temp;
 
-	temp = &adj_table[v2];
-	while(temp->adj_v != NULL) temp = temp->adj_v;
-	temp->adj_v = node1;
+	temp = adj_table[v2].adj_v;
+	adj_table[v2].adj_v = node1;
+	node1->adj_v = temp;
 	
 	e_count++;
 	return 0;
