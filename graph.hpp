@@ -1,4 +1,3 @@
-//#include"vertex.hpp"
 template<typename key_type>
 struct adj_node
 {
@@ -14,8 +13,8 @@ class graph{
 private:
 	int v_count; 
 	int e_count;
-	struct adj_node<key_type> adj_table[GRAPH_SIZE];
-	struct vertex<key_type> v_table[GRAPH_SIZE];
+	struct adj_node<key_type> adj_table[GRAPH_SIZE+1];
+	struct vertex<key_type> v_table[GRAPH_SIZE+1];
 public:
 	graph();
 	int add_vertex(int index, key_type key);
@@ -27,6 +26,7 @@ public:
 	int get_v_count(); 
 	int get_e_count();
 	vertex<key_type> get_v(int name);
+	void get_adj_table(struct adj_node<key_type> table[]);
 //	int destroy_graph();
 };
 
@@ -93,10 +93,10 @@ bool graph<key_type,GRAPH_SIZE>::is_edge(int v1,int v2)
 {
 	struct adj_node<key_type>* temp;
 	temp = &adj_table[v1];
+//	if (v1 > GRAPH_SIZE || v2 > GRAPH_SIZE ) return false; 
 	while(temp != NULL)
 	{
 		if (temp->name == v2) return true;
-		//std::cout << "name: "<< temp->name <<std::endl;
 		temp = temp->adj_v;
 	}
 	return false;
@@ -121,3 +121,11 @@ vertex<key_type> graph<key_type,GRAPH_SIZE>::get_v(int v1)
 	return v_table[v1];
 }
 
+template<typename key_type,int GRAPH_SIZE>
+void graph<key_type,GRAPH_SIZE>::get_adj_table(struct adj_node<key_type> table[])
+{
+	int i;
+	for (i = 1 ; i <= GRAPH_SIZE; i ++)
+		table[i] = adj_table[i];
+	return;
+}
