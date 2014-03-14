@@ -1,5 +1,4 @@
 #include<vector>
-#include<algorithm>
 //declartion of heap class.
 using namespace std;
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>

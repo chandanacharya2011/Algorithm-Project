@@ -1,4 +1,8 @@
+const int VNUM = 500;
+const int MAX_WEIGHT = 5000;
+const int DEGREE = 10;
 #include <iostream>
+#include <algorithm>
 #include <ctime>
 #include <cstdlib>
 #include "heap.hpp"
@@ -6,7 +10,6 @@
 #include "graph.hpp"
 #include "max_bandwidth.hpp"
 #define KEY_TYPE double
-#define VNUM 300
 using namespace std;
 void init_graph1(graph<KEY_TYPE,VNUM> &g0);
 void init_graph2(graph<KEY_TYPE,VNUM> &g0);
@@ -43,26 +46,31 @@ int main(){
 	return 0;
 }
 // First method to initialize the graph
+// Random regular graph , not always success, need optimized algorithm
 void init_graph1(graph<KEY_TYPE,VNUM> &g0)
 {	
-	int i,count,ran_num;
+	int i,count,ran_num,ran_num1;
+	int v_degree[VNUM + 1];
 	for(i = 1 ; i <= VNUM ; i++)
-		g0.add_vertex(i,0);
-	srand((unsigned)time(0));
-	for (i = 1 ; i <= VNUM ; i++)
 	{
+		g0.add_vertex(i,0);
+		v_degree[i] = 0;
+	}
+	srand((unsigned)time(0));
 		count = 0;
-		while (count < 6) 
+		while (count < (DEGREE * VNUM / 2)) 
 		{
 			ran_num = (rand() % VNUM) + 1;
-			if (!g0.is_edge(i,ran_num)) 
+			ran_num1 = (rand() % VNUM) + 1;
+			if (!g0.is_edge(i,ran_num) && v_degree[ran_num] < DEGREE && v_degree[ran_num1] < DEGREE) 
 			{
-				g0.add_edge(i,ran_num,rand() % 5000 + 1);
-	//			cout <<"add:" << i << " , " << ran_num << " wt: "<<g0.edge_weight(i,ran_num)<<endl;
+				g0.add_edge(ran_num1,ran_num,rand() % MAX_WEIGHT + 1);
+				//cout <<"add:" << ran_num1 << " , " << ran_num << " wt: "<<g0.edge_weight(ran_num1,ran_num)<<endl;
+				v_degree[ran_num] ++;
+				v_degree[ran_num1] ++;
 				count++;
 			}
 		}
-	}
 	return;
 }
 // Second method to initialize the graph
@@ -77,7 +85,7 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 			ran_num = rand() % 5;
 			//20% possibility
 			if (ran_num == 0 && i != j) 
-			{	g0.add_edge(i,j,rand() % 5000 + 1);
+			{	g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
 	//			cout <<"add:" << i << " , " << j << " wt: "<<g0.edge_weight(i,j)<<endl;
 			}
 		}
@@ -88,13 +96,13 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 {
 	int i;
-	if (!g0.is_edge(s,1) && s != 1) g0.add_edge(s,1,rand() % 5000 + 1);
-	if (!g0.is_edge(t,VNUM) && t != 1) g0.add_edge(t,VNUM,rand() % 5000 + 1);
+	if (!g0.is_edge(s,1) && s != 1) g0.add_edge(s,1,rand() % MAX_WEIGHT + 1);
+	if (!g0.is_edge(t,VNUM) && t != 1) g0.add_edge(t,VNUM,rand() % MAX_WEIGHT + 1);
 	for(i = 1; i< VNUM; i++ ) 
 	{
 		if (!g0.is_edge(i,i+1))
 		{
-			g0.add_edge(i,i+1,rand() % 5000 + 1);
+			g0.add_edge(i,i+1,rand() % MAX_WEIGHT + 1);
 		}
 	
 	}
