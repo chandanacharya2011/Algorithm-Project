@@ -2,12 +2,13 @@ template<typename key_type>
 class vertex{
 private:
 	key_type vertex_key;
-	int vertex_name;
+	long vertex_name;
 public:	
 	vertex(int name, key_type key);
 	vertex();
 	key_type get_key();
-	int get_name();
+	void set_key(key_type key);
+	long get_name();
 };
 
 template<typename key_type>
@@ -17,7 +18,15 @@ key_type vertex<key_type>::get_key()
 }
 
 template<typename key_type>
-int vertex<key_type>::get_name()
+void vertex<key_type>::set_key(key_type key)
+{
+	vertex_key = key;
+	return;
+}
+
+
+template<typename key_type>
+long vertex<key_type>::get_name()
 {
 	return vertex_name;
 }
@@ -50,3 +59,19 @@ key_type value_fun<key_type>::operator()(vertex<key_type> e1)
 {
 	return e1.get_key();
 }
+
+
+template<typename key_type>
+class name_fun
+{
+public:
+	long operator()(vertex<key_type> e1);
+};
+
+template<typename key_type>
+long name_fun<key_type>::operator()(vertex<key_type> e1)
+{
+	return e1.get_name();
+}
+
+

@@ -8,7 +8,7 @@ using namespace std;
 
 int main(){
 	
-	heap<vertex<KEY_TYPE>,5000,value_fun<KEY_TYPE>,KEY_TYPE> h0;
+	heap<vertex<KEY_TYPE>,5000,value_fun<KEY_TYPE>,name_fun<KEY_TYPE>,KEY_TYPE> h0(true);
 	
 	int i,j;
 
@@ -47,17 +47,23 @@ int main(){
 	h0.insert(g1.get_v(7));
 	h0.insert(g1.get_v(8));
 	
-	cout <<"min:"<< h0.min().get_key() << endl;
+	cout <<"max:"<< h0.max().get_key() << endl;
 	cout <<"size:"<< h0.size() << endl;
 
 	
 	for (i=1;i<=h0.size();i++) cout << h0.index(i).get_name()<< " , "<<h0.index(i).get_key() <<endl;
-	for (j=1;h0.size();j++)
+	h0.modify_at(2,g1.get_v(3));
+	cout << endl;
+	for (i=1;i<=h0.size();i++) cout << h0.index(i).get_name()<< " , "<<h0.index(i).get_key() <<endl;
+	for (i=1;i<=h0.size();i++) cout << "i: " << i << ", "<< h0.get_index(i) <<endl;
+
+/*	for (j=1;h0.size();j++)
 	{	
-		h0.del_min();
+		h0.del_max();
 		cout <<"after remove:"<< endl;
 		for (i=1;i<=h0.size();i++) cout << h0.index(i).get_name()<< " , "<<h0.index(i).get_key() <<endl;
+		for (i=1;i<=8;i++) cout << "i: " << i << ", "<< h0.get_index(i) <<endl;
 	}
-
+*/	
 	return 0;
 }

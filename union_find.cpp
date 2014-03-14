@@ -5,12 +5,19 @@ void make_set(int set[], int degree[], int v)
 	degree[v] = 0;
 	return;
 }
-// No path compression
+// With path compression
 int find(int set[],int v)
 {
-	int v1;
+	int v1,v2,v3;
 	v1 = v;
+	v2 = v;
 	while(set[v1] != 0) v1 = set[v1];
+	while(set[v2] != 0) 
+	{
+		v3 = v2;
+		v2 = set[v2];
+		set[v3] = v1;
+	}
 	return v1;
 }
 void set_union(int set[], int degree[],int v1,int v2)

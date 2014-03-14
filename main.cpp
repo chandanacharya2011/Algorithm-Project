@@ -6,27 +6,40 @@
 #include "graph.hpp"
 #include "max_bandwidth.hpp"
 #define KEY_TYPE double
-#define VNUM 50
+#define VNUM 300
 using namespace std;
 void init_graph1(graph<KEY_TYPE,VNUM> &g0);
 void init_graph2(graph<KEY_TYPE,VNUM> &g0);
 void add_path(graph<KEY_TYPE,VNUM> &g0,int source,int destination);
 
 int main(){
+	time_t t1,t2;
 	struct edge<KEY_TYPE> path[VNUM];
 	graph<KEY_TYPE,VNUM> g1,g2;
-	init_graph1(g1);
-	init_graph2(g2);
+	//init_graph1(g1);
+	init_graph1(g2);
 	
 	add_path(g2,3,40);
 	
 	cout << "MBP-Using KRUSKAL" << endl;
+	t1 = clock();
 	mbp_kruskal<KEY_TYPE,VNUM>(g2,3,40,path);
+	t2 = clock();
+	cout << t2 - t1 << endl;
 	cout << endl;
 	cout << "MBP-Using Dijkstra" << endl;
+	t1 = clock();
 	mbp_dijkstra<KEY_TYPE,VNUM>(g2,3,40,path);
+	t2 = clock();
+	cout << t2 - t1 << endl;
+
 	cout << endl;
 	cout << "MBP-Using Dijkstra with a heap" << endl;
+	t1 = clock();
+	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,3,40,path);
+	t2 = clock();
+	cout << t2 - t1 << endl;
+	
 	return 0;
 }
 // First method to initialize the graph
