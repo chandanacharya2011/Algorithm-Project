@@ -21,7 +21,7 @@ void sort_edge (struct edge<key_type> edges[], int edge_num);
 template<typename key_type, int graph_size>
 int find_path(bool edge_flag[][graph_size + 1],struct adj_node<key_type> table[],int s,int t,edge<key_type> path[]);
 
-//Using Krukal to find MBP
+//Using Kruskal to find MBP
 template<typename key_type, int graph_size>
 key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, struct edge<key_type> path[])
 {
@@ -53,11 +53,11 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, struct edge<ke
 		}
 	
 	}
-	t1 = clock();
+//	t1 = clock();
 	sort_edge<key_type,graph_size>(edges,edge_num);
 	
-	t2 = clock();
-	cout << "sort:" << t2 -t1 << endl;
+//	t2 = clock();
+//	cout << "sort:" << t2 -t1 << endl;
 	for (i = 1 ; i <= graph_size ; i ++ )
 		for (j = 1 ; j <= graph_size ; j ++ )
 				edge_flag[i][j] = false;
@@ -70,11 +70,7 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, struct edge<ke
 			set_union(set,degree,edges[i].v1,edges[i].v2);
 			edge_flag[edges[i].v1][edges[i].v2] = true;
 		}
-	t1 = clock();
 	find_path<key_type,graph_size>(edge_flag,table,s,t,path);
-	t2 = clock();
-	cout << "find path:" << t2 -t1 << endl;
-
 	return 0;
 }
 
@@ -141,11 +137,14 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t, struct edge<k
 		fringe.erase(max);
 	}
 	i = t;
+	int max_bw = MAX_WEIGHT;
 	while( i != s) 
 	{
-		cout << v_parent[i] <<","<< i <<":"<< v_parent_weight[i] <<endl;
+		if (v_parent_weight[i] < max_bw) max_bw = v_parent_weight[i];
+	//	cout << v_parent[i] <<","<< i <<":"<< v_parent_weight[i] <<endl;
 		i = v_parent[i];
 	}
+	cout << "max bw:" << max_bw <<endl;
 	return 0;
 }
 //Using Dijkstra to find MBP with heap.
@@ -226,12 +225,14 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t, struct e
 		fringe.del_max();
 	}
 	i = t;
+	int max_bw = MAX_WEIGHT + 1;
 	while( i != s) 
 	{
-		cout << v_parent[i] <<","<< i <<":"<< v_parent_weight[i] <<endl;
+		if (v_parent_weight[i] < max_bw) max_bw = v_parent_weight[i];
+	//	cout << v_parent[i] <<","<< i <<":"<< v_parent_weight[i] <<endl;
 		i = v_parent[i];
 	}
-	
+	cout << "max bw:" << max_bw <<endl;
 	return 0;
 }
 
@@ -245,7 +246,7 @@ int compare (const void * a, const void * b)
 template<typename key_type, int graph_size>
 void sort_edge (struct edge<key_type> edges[], int edge_num)
 {
-/*
+
 	heap<edge<key_type>,graph_size*graph_size,value_fun_edge<key_type>,name_fun_edge<key_type>,key_type> h0(false);
 	int i;
 	for(i = 0; i < edge_num ; i++ ) h0.insert(edges[i]);
@@ -254,12 +255,12 @@ void sort_edge (struct edge<key_type> edges[], int edge_num)
 		edges[i] = h0.max();
 		h0.del_max();
 	}
-*/
-	qsort(edges,edge_num,sizeof(struct edge<key_type>),compare<key_type>);
+
+//	qsort(edges,edge_num,sizeof(struct edge<key_type>),compare<key_type>);
 	return;
 }
 
-
+// Using DFS to find the path from s to t in the Maximum Spanning Tree.
 template<typename key_type, int graph_size>
 int find_path(bool edge_flag[][graph_size + 1],struct adj_node<key_type> table[],int s,int t,edge<key_type> path[])
 {

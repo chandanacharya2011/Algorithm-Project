@@ -17,31 +17,41 @@ void add_path(graph<KEY_TYPE,VNUM> &g0,int source,int destination);
 
 int main(){
 	time_t t1,t2;
+	int start,end;
 	struct edge<KEY_TYPE> path[VNUM];
 	graph<KEY_TYPE,VNUM> g1,g2;
-	//init_graph1(g1);
+	init_graph1(g1);
 	init_graph1(g2);
-	
-	add_path(g2,3,40);
+	start =  (rand() % VNUM) + 1;
+	do
+		end =  (rand() % VNUM) + 1;
+	while(start == end);
+
+	cout << "start:" << start <<", end:" << end << endl;
+
+	add_path(g2,start,end);
 	
 	cout << "MBP-Using KRUSKAL" << endl;
 	t1 = clock();
-	mbp_kruskal<KEY_TYPE,VNUM>(g2,3,40,path);
+	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
-	cout << t2 - t1 << endl;
+	cout <<" Running time: "<<  t2 - t1 << endl;
 	cout << endl;
+	
+
 	cout << "MBP-Using Dijkstra" << endl;
 	t1 = clock();
-	mbp_dijkstra<KEY_TYPE,VNUM>(g2,3,40,path);
+	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
-	cout << t2 - t1 << endl;
-
+	cout <<" Running time: "<<  t2 - t1 << endl;
 	cout << endl;
+
+
 	cout << "MBP-Using Dijkstra with a heap" << endl;
 	t1 = clock();
-	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,3,40,path);
+	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
-	cout << t2 - t1 << endl;
+	cout <<" Running time: "<<  t2 - t1 << endl;
 	
 	return 0;
 }
