@@ -1,13 +1,15 @@
 #include<vector>
-#include<algorithm>
 //declartion of heap class.
 using namespace std;
 template <typename element, long MAX_SIZE, typename key_fun,typename key_type>
 class heap{
 
 private:
+	//element* heap_array = new element[MAX_SIZE + 1];
+	//element heap_array[MAX_SIZE + 1];
 	vector<element> heap_array;
 	void heaplize(long start_index);
+	void swap(element& e1, element& e2);
 	long heap_size;
 	key_type key(element e1);
 public:
@@ -36,18 +38,29 @@ key_type heap<element,MAX_SIZE,key_fun,key_type>::key(element e1)
 }
 
 
+
+template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
+void heap<element,MAX_SIZE,key_fun,key_type>::swap(element& e1,element& e2)
+{
+	element temp;
+	temp = e1;
+	e1 = e2;
+	e2 = temp;
+	return;
+}
+
 //push down the node to maintain a heap.
 template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
 void heap<element,MAX_SIZE,key_fun,key_type>::heaplize(long start_index)
 {
 	long min = start_index;
 	
-	if (2 * start_index <= heap_size &&  key(heap_array[start_index]) > key(heap_array[2 * start_index]))
+	if (2 * start_index <= heap_size &&  key(heap_array.at(start_index)) > key(heap_array.at(2 * start_index)))
 		min = 2 * start_index;
-	if (2 * start_index + 1 <= heap_size &&  key(heap_array[min]) > key(heap_array[2 * start_index + 1]))
+	if (2 * start_index + 1 <= heap_size &&  key(heap_array.at(min)) > key(heap_array.at(2 * start_index + 1)))
 		min = 2 * start_index + 1;
 	if (start_index != min)	{
-		swap(heap_array[min],heap_array[start_index]);
+		swap(heap_array.at(min),heap_array.at(start_index));
 		heaplize(min);
 	}
 	else return;
@@ -59,13 +72,14 @@ template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
 void heap<element,MAX_SIZE,key_fun,key_type>::insert(element e1)
 {
 	heap_size++;
-	heap_array[heap_size] = e1;
-	
+	cout << "test0" <<endl;
+	heap_array.at(heap_size) = e1;
+	cout << "test1" <<endl;
 	long i = heap_size;
 
-        while( i > 1 &&  key(heap_array[i]) < key(heap_array[i/2]) ) 
+        while( i > 1 &&  key(heap_array.at(i)) < key(heap_array.at(i/2)) ) 
 		{
-		swap(heap_array[i],heap_array[i/2]);
+		swap(heap_array.at(i),heap_array.at(i/2));
 		i = i / 2;
 		}
         return;
@@ -80,7 +94,7 @@ long heap<element,MAX_SIZE,key_fun,key_type>::size()
 template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
 element heap<element,MAX_SIZE,key_fun,key_type>::min()
 {
-	return heap_array[1];
+	return heap_array.at(1);
 }
 
 //delete the minimum(also the first) element if the heap.
@@ -88,7 +102,7 @@ template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
 void heap<element,MAX_SIZE,key_fun,key_type>::del_min()
 {
 	if (heap_size == 0) return;
-	heap_array[1] = heap_array[heap_size];
+	heap_array.at(1) = heap_array.at(heap_size);
 	heap_size--;
 	if (heap_size == 0) return;
 	else heaplize(1);
@@ -100,5 +114,5 @@ void heap<element,MAX_SIZE,key_fun,key_type>::del_min()
 template <typename element, long MAX_SIZE, typename key_fun, typename key_type>
 element heap<element,MAX_SIZE,key_fun,key_type>::index(long index)
 {
-	return heap_array[index];
+	return heap_array.at(index);
 }

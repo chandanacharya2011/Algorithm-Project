@@ -13,8 +13,8 @@ class graph{
 private:
 	int v_count; 
 	int e_count;
-	struct adj_node<key_type> adj_table[GRAPH_SIZE+1];
-	struct vertex<key_type> v_table[GRAPH_SIZE+1];
+	struct adj_node<key_type> adj_table[GRAPH_SIZE + 1];
+	struct vertex<key_type> v_table[GRAPH_SIZE + 1];
 public:
 	graph();
 	int add_vertex(int index, key_type key);
