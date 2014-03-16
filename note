@@ -1,0 +1,9 @@
+1.头文件应该加入防止multiply including 的代码
+2. 应该填充返回path的代码，path数组应该可以可以改成vector
+3.edge要从结构体改成类
+4.add_path 仍然没有完全符合要求，待改。
+5.bool 二维数组是静态变量， 当vertex 过多时无法stack内空间满足，应该改成vector或者是动态数组(一维最好)。
+6. random regular graph 的算法需要改进，当前算法有可能形成死锁。
+7.部分代码可以考虑使用inline function
+8.deconstruct函数需要添加
+9.增加更多的#define，部分不必要的const需要用#define代替

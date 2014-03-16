@@ -6,7 +6,6 @@ struct edge
 	key_type weight;
 };
 
-
 template<typename key_type>
 class value_fun_edge
 {
@@ -20,7 +19,7 @@ key_type value_fun_edge<key_type>::operator()(edge<key_type> e1)
 	return e1.weight;
 }
 
-
+//Since there no need for naming an edge , this is a dummy functor
 template<typename key_type>
 class name_fun_edge
 {

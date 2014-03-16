@@ -38,20 +38,17 @@ graph<key_type,GRAPH_SIZE>::graph()
 	int e_count = 0;
 }
 
-
 template<typename key_type,int GRAPH_SIZE>
 int graph<key_type,GRAPH_SIZE>::get_v_count()
 {
 	return v_count;
 }
 
-
 template<typename key_type,int GRAPH_SIZE>
 int graph<key_type,GRAPH_SIZE>::get_e_count()
 {
 	return e_count;
 }
-
 
 template<typename key_type,int GRAPH_SIZE>
 int graph<key_type,GRAPH_SIZE>::add_vertex(int v1, key_type key)

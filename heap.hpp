@@ -22,8 +22,6 @@ public:
 	long get_index(long ele_name);
 	element index(long index);//need to remove
 };
-
-
 // defination of heap class.
 //Construction Fun
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
@@ -39,7 +37,6 @@ heap<element,MAX_SIZE,key_fun,name_fun,key_type>::heap(bool enable)
 	else map_enable = false;
 }
 
-
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 key_type heap<element,MAX_SIZE,key_fun,name_fun,key_type>::key(element e1)
 {
@@ -47,14 +44,12 @@ key_type heap<element,MAX_SIZE,key_fun,name_fun,key_type>::key(element e1)
 	return  fun(e1);
 }
 
-
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 long heap<element,MAX_SIZE,key_fun,name_fun,key_type>::name(element e1)
 {
 	name_fun fun;
 	return  fun(e1);
 }
-
 
 //push down the node to maintain a heap.
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
@@ -121,7 +116,6 @@ void heap<element,MAX_SIZE,key_fun,name_fun,key_type>::del_max()
 	return;
 }
 
-
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 void heap<element,MAX_SIZE,key_fun,name_fun,key_type>::modify_at(long index,element new_ele)
 {
@@ -135,7 +129,6 @@ void heap<element,MAX_SIZE,key_fun,name_fun,key_type>::modify_at(long index,elem
 		swap(heap_array[i],heap_array[i/2]);
 		i = i / 2;
 		}
-
 	heaplize(i);
 	return;
 }

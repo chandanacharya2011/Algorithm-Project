@@ -1,5 +1,5 @@
-const int VNUM = 500;
-const int MAX_WEIGHT = 5000;
+const int VNUM = 5000;
+const int MAX_WEIGHT = 8000;
 const int DEGREE = 10;
 #include <iostream>
 #include <algorithm>
@@ -14,45 +14,37 @@ using namespace std;
 void init_graph1(graph<KEY_TYPE,VNUM> &g0);
 void init_graph2(graph<KEY_TYPE,VNUM> &g0);
 void add_path(graph<KEY_TYPE,VNUM> &g0,int source,int destination);
-
 int main(){
 	time_t t1,t2;
 	int start,end;
 	struct edge<KEY_TYPE> path[VNUM];
 	graph<KEY_TYPE,VNUM> g1,g2;
 	init_graph1(g1);
-	init_graph1(g2);
+	init_graph2(g2);
 	start =  (rand() % VNUM) + 1;
 	do
 		end =  (rand() % VNUM) + 1;
 	while(start == end);
 
 	cout << "start:" << start <<", end:" << end << endl;
-
 	add_path(g2,start,end);
-	
 	cout << "MBP-Using KRUSKAL" << endl;
 	t1 = clock();
 	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	cout <<" Running time: "<<  t2 - t1 << endl;
 	cout << endl;
-	
-
 	cout << "MBP-Using Dijkstra" << endl;
 	t1 = clock();
 	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	cout <<" Running time: "<<  t2 - t1 << endl;
 	cout << endl;
-
-
 	cout << "MBP-Using Dijkstra with a heap" << endl;
 	t1 = clock();
 	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	cout <<" Running time: "<<  t2 - t1 << endl;
-	
 	return 0;
 }
 // First method to initialize the graph
@@ -114,8 +106,6 @@ void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 		{
 			g0.add_edge(i,i+1,rand() % MAX_WEIGHT + 1);
 		}
-	
 	}
 	return;
 }
-
