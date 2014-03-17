@@ -2,6 +2,7 @@
 #define __mbp
 
 #include <vector>
+#include <algorithm>
 #include "edge.hpp"
 #include "heap.hpp"
 #include "graph.hpp"
@@ -12,7 +13,6 @@
 #define ON_PATH  0
 #define OFF_PATH  1
 
-using namespace std;
 template<typename key_type, int graph_size>
 key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path);
 
@@ -42,7 +42,6 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<k
 	struct adj_node<key_type>* temp;
 	int degree[graph_size + 1];
 	int set[graph_size + 1];
-	//time_t t1,t2;
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
 	for (i = 1 ; i <= graph_size ; i ++ )
@@ -76,7 +75,6 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<k
 	find_path<key_type,graph_size>(edge_flag,table,s,t,path);
 	return 0;
 }
-
 //Using Dijksta to find MBP without heap.
 template<typename key_type, int graph_size>
 key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path)
@@ -87,7 +85,8 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 	int v_parent[graph_size + 1];
 	key_type v_parent_weight[graph_size + 1];
 	vector<int> fringe;
-	int i;
+	int i,max_v;
+	time_t t1,t2,t3=0;
 	struct adj_node<key_type>* temp;
 	vector<int>::iterator ii,max;
 	//get all the edge information from the graph.
@@ -99,47 +98,44 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 	}
 	v_table[s] = MAX_WEIGHT + 1;
 	v_flag[s] = FRINGE;
-	fringe.reserve(graph_size + 1);
 	fringe.push_back(s);
-
 	while(!fringe.empty())
 	{
 		max = fringe.begin();
+		t1 = clock();
 		for (ii = fringe.begin(); ii != fringe.end() ; ii++) 
-			if (v_table[*ii] > v_table[*max]) max = ii;
-		temp = table[*max].adj_v;
+			if  (v_table[*ii] > v_table[*max])  max = ii;
+	
+	//	max = std::max_element(fringe.begin(),fringe.end(),table_compare<v_table>);
+		t2 = clock();
+		t3 = t3 + (t2-t1);
+		max_v = *max;
+		fringe.erase(max);
+		v_flag[max_v] = INTREE;
+		temp = table[max_v].adj_v;
 		while(temp != NULL)
 		{
 			if (v_flag[temp->name] == UNSEEN) 
 			{
 				v_flag[temp->name] = FRINGE;
 				fringe.push_back(temp->name);
-				if (v_table[*max] > temp->weight)
-						v_table[temp->name] = temp->weight;
-					else
-						v_table[temp->name] = v_table[*max];
-
-				v_parent[temp->name] = *max;
+				v_table[temp->name] = std::min(v_table[max_v],temp->weight);
+				v_parent[temp->name] = max_v;
 				v_parent_weight[temp->name] = temp->weight;
 			}
 			else if(v_flag[temp->name] == FRINGE)
 			{
-				if ((temp->weight > v_table[temp->name]) && (v_table[*max] >  v_table[temp->name]))
+				if ((temp->weight > v_table[temp->name]) && (v_table[max_v] >  v_table[temp->name]))
 				{
-					v_parent[temp->name] = *max;
+					v_parent[temp->name] = max_v;
 					v_parent_weight[temp->name] = temp->weight;
-					if (v_table[*max] > temp->weight)
-						v_table[temp->name] = temp->weight;
-					else
-						v_table[temp->name] = v_table[*max];
+					v_table[temp->name] = std::min(v_table[max_v],temp->weight);
 				}	
 			}
 			temp = temp->adj_v;
 		}
-			
-		v_flag[*max] = INTREE;
-		fringe.erase(max);
-	}
+		}
+	
 	i = t;
 	edge<key_type> edge_here;
 	while( i != s) 
@@ -150,6 +146,7 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 		path.push_back(edge_here);
 		i = v_parent[i];
 	}
+	std::cout <<  " find max  edges :"<< t3 << std::endl;
 	return 0;
 }
 //Using Dijkstra to find MBP with heap.
@@ -181,18 +178,9 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector<
 				v_flag[temp->name] = FRINGE;
 				fringe.insert(g0.get_v(temp->name));
 				//Relax all the path to adjacnt vertices with the max vertex.
-				if (max.get_key() > temp->weight)
-					{
-						v1 = fringe.index(fringe.get_index(temp->name));
-						v1.set_key(temp->weight);
-						fringe.modify_at(fringe.get_index(temp->name),v1);
-					}
-					else
-					{
-						v1 = fringe.index(fringe.get_index(temp->name));
-						v1.set_key(max.get_key());
-						fringe.modify_at(fringe.get_index(temp->name),v1);
-					}
+				v1 = fringe.index(fringe.get_index(temp->name));
+				v1.set_key(std::min(max.get_key(),temp->weight));
+				fringe.modify_at(fringe.get_index(temp->name),v1);
 				v_parent[temp->name] = max.get_name();
 				v_parent_weight[temp->name] = temp->weight;
 			}
@@ -204,19 +192,9 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector<
 					v_parent[temp->name] = max.get_name();
 					v_parent_weight[temp->name] = temp->weight;
 					//Relax
-					if (max.get_key() > temp->weight)
-					{
-						v1 = fringe.index(fringe.get_index(temp->name));
-						v1.set_key(temp->weight);
-						fringe.modify_at(fringe.get_index(temp->name),v1);
-					}
-					else
-					{
-						v1 = fringe.index(fringe.get_index(temp->name));
-						v1.set_key(max.get_key());
-						fringe.modify_at(fringe.get_index(temp->name),v1);
-					}
-
+					v1 = fringe.index(fringe.get_index(temp->name));
+					v1.set_key(std::min(max.get_key(),temp->weight));
+					fringe.modify_at(fringe.get_index(temp->name),v1);
 				}	
 			}
 			temp = temp->adj_v;
@@ -263,6 +241,7 @@ int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vec
 	struct adj_node<key_type>* temp;
 	temp = table[s].adj_v;
 	edge<key_type> edge_here;
+	edge_here.v1 = s;
 	while(temp != NULL) 
 	{
 		if(edge_flag[s * graph_size + temp->name] || edge_flag[temp->name * graph_size + s] )
@@ -272,9 +251,6 @@ int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vec
 		
 			if (temp->name == t)
 			{
-				//cout << "path edge:" << s << ","<< t <<":" << temp->weight << endl;
-					
-				edge_here.v1 = s;
 				edge_here.v2 = t;
 				edge_here.weight = temp->weight;
 
@@ -283,9 +259,6 @@ int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vec
 			}
 			else if (find_path<key_type,graph_size>(edge_flag,table,temp->name,t,path) == 0)
 			{
-				//cout << "path edge:" << s << ","<< temp->name <<":" << temp->weight << endl;
-					
-				edge_here.v1 = s;
 				edge_here.v2 = temp->name;
 				edge_here.weight = temp->weight;
 

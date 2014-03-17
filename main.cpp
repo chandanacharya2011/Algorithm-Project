@@ -24,6 +24,7 @@ int main(){
 	init_graph1(g1);
 	init_graph1(g2);
 	// Randomly set start and end different value
+	cout << "Case for Dense Graph: " << endl;
 	start =  (rand() % VNUM) + 1;
 	do
 		end =  (rand() % VNUM) + 1;
@@ -31,21 +32,21 @@ int main(){
 
 	cout << "start:" << start <<", end:" << end << endl;
 	add_path(g2,start,end);
-	cout << "MBP-Using KRUSKAL" << endl;
+	cout << "MBP-Using KRUSKAL: " << endl;
 	t1 = clock();
 	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	print_path(path);
 	cout <<"Running time: "<<  t2 - t1 << endl;
 	cout << endl;
-	cout << "MBP-Using Dijkstra" << endl;
+	cout << "MBP-Using Dijkstra: " << endl;
 	t1 = clock();
 	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	print_path(path);
 	cout <<"Running time: "<<  t2 - t1 << endl;
 	cout << endl;
-	cout << "MBP-Using Dijkstra with a heap" << endl;
+	cout << "MBP-Using Dijkstra with a heap: " << endl;
 	t1 = clock();
 	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
@@ -91,10 +92,10 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 		for (j = i ; j <= VNUM ; j++)
 		{
 			ran_num = rand() % 5;
-			//20% possibility
+			//20% possibility to hit
 			if (ran_num == 0 && i != j) 
 			{	g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
-	//			cout <<"add:" << i << " , " << j << " wt: "<<g0.edge_weight(i,j)<<endl;
+//				cout <<"add:" << i << " , " << j << " wt: "<<g0.edge_weight(i,j)<<endl;
 			}
 		}
 
@@ -124,7 +125,7 @@ void print_path(vector< edge<KEY_TYPE> > path)
 	for(ii = path.begin(); ii != path.end(); ii ++ ) 
 	{
 		if ((*ii).weight < max_bandwidth) max_bandwidth = (*ii).weight;
-	//	cout <<"v1:" << (*ii).v1 << " , v2: " << (*ii).v2 <<" ,weight:  "<< (*ii).weight << endl;
+//		cout <<"v1:" << (*ii).v1 << " , v2: " << (*ii).v2 <<" ,weight:  "<< (*ii).weight << endl;
 	}
 	cout << "MAX_BANDWIDTH: "<< max_bandwidth<< endl;
 	return;
