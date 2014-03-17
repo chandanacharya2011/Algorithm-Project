@@ -1,10 +1,12 @@
+#ifndef __vertex
+#define __vertex
 template<typename key_type>
 class vertex{
 private:
 	key_type vertex_key;
 	long vertex_name;
 public:	
-	vertex(int name, key_type key);
+	vertex(long name, key_type key);
 	vertex();
 	key_type get_key();
 	void set_key(key_type key);
@@ -32,7 +34,7 @@ long vertex<key_type>::get_name()
 }
 
 template<typename key_type>
-vertex<key_type>::vertex(int name, key_type key)
+vertex<key_type>::vertex(long name, key_type key)
 {
 	vertex_key = key;
 	vertex_name = name;
@@ -74,4 +76,4 @@ long name_fun<key_type>::operator()(vertex<key_type> e1)
 	return e1.get_name();
 }
 
-
+#endif

@@ -1,3 +1,6 @@
+#ifndef __GRAPH
+#define __GRAPH
+#include "vertex.hpp"
 template<typename key_type>
 struct adj_node
 {
@@ -126,3 +129,5 @@ void graph<key_type,GRAPH_SIZE>::get_adj_table(struct adj_node<key_type> table[]
 		table[i] = adj_table[i];
 	return;
 }
+
+#endif

@@ -20,6 +20,7 @@ int find(int set[],int v)
 	}
 	return v1;
 }
+// Union two element into one set.
 void set_union(int set[], int degree[],int v1,int v2)
 {
 	v1 = find(set,v1);

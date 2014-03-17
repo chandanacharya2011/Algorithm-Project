@@ -1,3 +1,6 @@
+#ifndef __heap
+#define __heap
+
 #include<vector>
 //declartion of heap class.
 using namespace std;
@@ -20,7 +23,7 @@ public:
 	void del_max();
 	void modify_at(long index, element new_ele);
 	long get_index(long ele_name);
-	element index(long index);//need to remove
+	element index(long index);
 };
 // defination of heap class.
 //Construction Fun
@@ -141,9 +144,11 @@ long heap<element,MAX_SIZE,key_fun,name_fun,key_type>::get_index(long ele_name)
 	return name_to_index[ele_name];
 }
 
-//for test only, need to remove
+//get element from specific index.
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 element heap<element,MAX_SIZE,key_fun,name_fun,key_type>::index(long index)
 {
 	return heap_array[index];
 }
+
+#endif
