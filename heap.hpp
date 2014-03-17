@@ -2,7 +2,7 @@
 #define __heap
 
 #include<vector>
-//declartion of heap class.
+//declartion of max heap class.
 using namespace std;
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 class heap{
@@ -43,15 +43,15 @@ heap<element,MAX_SIZE,key_fun,name_fun,key_type>::heap(bool enable)
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 key_type heap<element,MAX_SIZE,key_fun,name_fun,key_type>::key(element e1)
 {
-	key_fun fun;
-	return  fun(e1);
+	key_fun k_fun;
+	return  k_fun(e1);
 }
 
 template <typename element, long MAX_SIZE, typename key_fun, typename name_fun,typename key_type>
 long heap<element,MAX_SIZE,key_fun,name_fun,key_type>::name(element e1)
 {
-	name_fun fun;
-	return  fun(e1);
+	name_fun n_fun;
+	return  n_fun(e1);
 }
 
 //push down the node to maintain a heap.

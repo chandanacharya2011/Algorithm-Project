@@ -30,7 +30,6 @@ public:
 	int get_e_count();
 	vertex<key_type> get_v(int name);
 	void get_adj_table(struct adj_node<key_type> table[]);
-//	int destroy_graph();
 };
 
 //defination
@@ -93,7 +92,6 @@ bool graph<key_type,GRAPH_SIZE>::is_edge(int v1,int v2)
 {
 	struct adj_node<key_type>* temp;
 	temp = &adj_table[v1];
-//	if (v1 > GRAPH_SIZE || v2 > GRAPH_SIZE ) return false; 
 	while(temp != NULL)
 	{
 		if (temp->name == v2) return true;

@@ -18,6 +18,7 @@ int find(int set[],int v)
 		v2 = set[v2];
 		set[v3] = v1;
 	}
+
 	return v1;
 }
 // Union two element into one set.

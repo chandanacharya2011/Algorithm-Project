@@ -10,6 +10,7 @@
 #include "graph.hpp"
 #include "max_bandwidth.hpp"
 #define KEY_TYPE double
+
 using namespace std;
 void init_graph1(graph<KEY_TYPE,VNUM> &g0);
 void init_graph2(graph<KEY_TYPE,VNUM> &g0);
@@ -22,7 +23,7 @@ int main(){
 	graph<KEY_TYPE,VNUM> g1,g2;
 	// Initial the graphs.
 	init_graph1(g1);
-	init_graph1(g2);
+	init_graph2(g2);
 	// Randomly set start and end different value
 	cout << "Case for Dense Graph: " << endl;
 	start =  (rand() % VNUM) + 1;
@@ -117,7 +118,7 @@ void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 	return;
 }
 
-
+// Print the path and bandwidth information to the screen
 void print_path(vector< edge<KEY_TYPE> > path)
 {
 	vector< edge<KEY_TYPE> >::iterator ii;
@@ -125,7 +126,7 @@ void print_path(vector< edge<KEY_TYPE> > path)
 	for(ii = path.begin(); ii != path.end(); ii ++ ) 
 	{
 		if ((*ii).weight < max_bandwidth) max_bandwidth = (*ii).weight;
-//		cout <<"v1:" << (*ii).v1 << " , v2: " << (*ii).v2 <<" ,weight:  "<< (*ii).weight << endl;
+		cout <<"edge:(" << (*ii).v1 << "," << (*ii).v2 <<"), weight: "<< (*ii).weight << endl;
 	}
 	cout << "MAX_BANDWIDTH: "<< max_bandwidth<< endl;
 	return;

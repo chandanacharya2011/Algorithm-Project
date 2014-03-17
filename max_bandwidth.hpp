@@ -40,8 +40,7 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<k
 	struct adj_node<key_type>  table[graph_size + 1];
 	edge<key_type>* edges = new edge<key_type>[graph_size * graph_size];
 	struct adj_node<key_type>* temp;
-	int degree[graph_size + 1];
-	int set[graph_size + 1];
+	int degree[graph_size + 1],set[graph_size + 1];
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
 	for (i = 1 ; i <= graph_size ; i ++ )
@@ -60,10 +59,12 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<k
 			temp = temp->adj_v;
 		}
 	}
+	//sort the edges from heigh weight to low weight
 	sort_edge<key_type,graph_size>(edges,edge_num);
 	for (i = 1 ; i <= graph_size ; i ++ )
 		for (j = 1 ; j <= graph_size ; j ++ )
 				edge_flag[i * graph_size + j] = false;
+	//make set for all the vertice
 	for (i = 1 ; i <= graph_size ; i ++ )
 		make_set(set,degree,i);
 	for (i = 0 ; i < edge_num; i ++ )
@@ -155,11 +156,10 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector<
 {
 	struct adj_node<key_type>  table[graph_size + 1];
 	short v_flag[graph_size + 1];
-	int v_parent[graph_size + 1];
+	int v_parent[graph_size + 1],i;
 	key_type v_parent_weight[graph_size + 1];
 	heap<vertex<key_type>,graph_size,value_fun<key_type>,name_fun<key_type>,key_type> fringe(true);
 	vertex<key_type> max,v1;
-	int i;
 	struct adj_node<key_type>* temp;
 	g0.get_adj_table(table);
 	for (i = 1; i <= graph_size ; i++) v_flag[i] = UNSEEN;
