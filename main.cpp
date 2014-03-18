@@ -95,9 +95,7 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 			ran_num = rand() % 5;
 			//20% possibility to hit
 			if (ran_num == 0 && i != j) 
-			{	g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
-//				cout <<"add:" << i << " , " << j << " wt: "<<g0.edge_weight(i,j)<<endl;
-			}
+				g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
 		}
 
 	return;
@@ -111,9 +109,7 @@ void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 	for(i = 1; i< VNUM; i++ ) 
 	{
 		if (!g0.is_edge(i,i+1))
-		{
 			g0.add_edge(i,i+1,rand() % MAX_WEIGHT + 1);
-		}
 	}
 	return;
 }
@@ -126,7 +122,7 @@ void print_path(vector< edge<KEY_TYPE> > path)
 	for(ii = path.begin(); ii != path.end(); ii ++ ) 
 	{
 		if ((*ii).weight < max_bandwidth) max_bandwidth = (*ii).weight;
-		cout <<"edge:(" << (*ii).v1 << "," << (*ii).v2 <<"), weight: "<< (*ii).weight << endl;
+	//	cout <<"edge:(" << (*ii).v1 << "," << (*ii).v2 <<"), weight: "<< (*ii).weight << endl;
 	}
 	cout << "MAX_BANDWIDTH: "<< max_bandwidth<< endl;
 	return;

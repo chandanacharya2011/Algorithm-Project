@@ -14,26 +14,20 @@
 #define OFF_PATH  1
 
 template<typename key_type, int graph_size>
-key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path);
+void mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path);
 
 template<typename key_type, int graph_size>
-key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path);
+void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path);
 
 template<typename key_type, int graph_size>
-key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path);
-
-template<typename key_type, int graph_size>
-void sort_edge (edge<key_type> edges[], int edge_num);
+void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path);
 
 template<typename key_type, int graph_size>
 int find_path(bool edge_flag[],adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path);
 
-template<typename key_type>
-int compare (const void * a, const void * b);
-
 //Using Kruskal to find MBP
 template<typename key_type, int graph_size>
-key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path)
+void mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path)
 {
 	int i,j,edge_num = 0;
 	bool *edge_flag  =  new bool[( graph_size +1 ) * (graph_size + 1)];
@@ -59,26 +53,34 @@ key_type mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<k
 			temp = temp->adj_v;
 		}
 	}
-	//sort the edges from heigh weight to low weight
-	sort_edge<key_type,graph_size>(edges,edge_num);
 	for (i = 1 ; i <= graph_size ; i ++ )
 		for (j = 1 ; j <= graph_size ; j ++ )
 				edge_flag[i * graph_size + j] = false;
+
 	//make set for all the vertice
-	for (i = 1 ; i <= graph_size ; i ++ )
-		make_set(set,degree,i);
-	for (i = 0 ; i < edge_num; i ++ )
+	for (i = 1 ; i <= graph_size ; i ++ ) make_set(set,degree,i);
+	
+	heap<edge<key_type>,graph_size*graph_size,value_fun_edge<key_type>,name_fun_edge<key_type>,key_type> h0(false);
+	long edge_count = 0;
+	for(i = 0; i < edge_num ; i++ ) h0.insert(edges[i]);
+	for(i = 0; i < edge_num ; i++ ) 
+	{
+		edges[i] = h0.max();
+		h0.del_max();
 		if (find(set,edges[i].v1) != find(set,edges[i].v2) )
 		{
+			edge_count ++;
 			set_union(set,degree,edges[i].v1,edges[i].v2);
 			edge_flag[edges[i].v1 * graph_size + edges[i].v2] = true;
 		}
+		if (edge_count == graph_size - 1 ) break;
+	}
 	find_path<key_type,graph_size>(edge_flag,table,s,t,path);
-	return 0;
+	return;
 }
 //Using Dijksta to find MBP without heap.
 template<typename key_type, int graph_size>
-key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path)
+void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path)
 {
 	struct adj_node<key_type>  table[graph_size + 1];
 	key_type v_table[graph_size + 1];
@@ -87,7 +89,6 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 	key_type v_parent_weight[graph_size + 1];
 	vector<int> fringe;
 	int i,max_v;
-	time_t t1,t2,t3=0;
 	struct adj_node<key_type>* temp;
 	vector<int>::iterator ii,max;
 	//get all the edge information from the graph.
@@ -103,14 +104,10 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 	while(!fringe.empty())
 	{
 		max = fringe.begin();
-		t1 = clock();
 		for (ii = fringe.begin(); ii != fringe.end() ; ii++) 
 			if  (v_table[*ii] > v_table[*max])  max = ii;
-	
-	//	max = std::max_element(fringe.begin(),fringe.end(),table_compare<v_table>);
-		t2 = clock();
-		t3 = t3 + (t2-t1);
 		max_v = *max;
+		if (max_v == t) break;
 		fringe.erase(max);
 		v_flag[max_v] = INTREE;
 		temp = table[max_v].adj_v;
@@ -147,12 +144,11 @@ key_type mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge
 		path.push_back(edge_here);
 		i = v_parent[i];
 	}
-	std::cout <<  " find max  edges :"<< t3 << std::endl;
-	return 0;
+	return;
 }
 //Using Dijkstra to find MBP with heap.
 template<typename key_type, int graph_size>
-key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path)
+void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path)
 {
 	struct adj_node<key_type>  table[graph_size + 1];
 	short v_flag[graph_size + 1];
@@ -170,6 +166,7 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector<
 	while(fringe.size())
 	{
 		max = fringe.max();
+		if (max.get_name() == t) break;
 		temp = table[max.get_name()].adj_v;
 		while(temp != NULL)
 		{
@@ -213,26 +210,8 @@ key_type mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector<
 		path.push_back(edge_here);
 		i = v_parent[i];
 	}
-	return 0;
-}
-//Using heap sort to sort the edges from high weight to low weight
-template<typename key_type, int graph_size>
-void sort_edge ( edge<key_type> edges[], int edge_num)
-{
-
-	heap<edge<key_type>,graph_size*graph_size,value_fun_edge<key_type>,name_fun_edge<key_type>,key_type> h0(false);
-	int i;
-	for(i = 0; i < edge_num ; i++ ) h0.insert(edges[i]);
-	for(i = 0; i < edge_num ; i++ ) 
-	{
-		edges[i] = h0.max();
-		h0.del_max();
-	}
-
-//	qsort(edges,edge_num,sizeof(edge<key_type>),compare<key_type>);
 	return;
 }
-
 // Using DFS to find the path from s to t in the Maximum Spanning Tree.
 template<typename key_type, int graph_size>
 int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path)
@@ -269,13 +248,6 @@ int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vec
 		temp = temp-> adj_v;
 	}
 	return OFF_PATH;
-}
-
-
-template<typename key_type>
-int compare (const void * a, const void * b)
-{
-  return ( (*(edge<key_type>*)b).weight - (*(edge<key_type>*)a).weight );
 }
 
 #endif
