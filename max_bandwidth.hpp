@@ -132,7 +132,7 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 			}
 			temp = temp->adj_v;
 		}
-		}
+	}
 	
 	i = t;
 	edge<key_type> edge_here;

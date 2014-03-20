@@ -1,5 +1,5 @@
 #define VNUM  5000
-#define MAX_WEIGHT  8000
+#define MAX_WEIGHT  8000.0
 #define DEGREE  6
 #include <iostream>
 #include <algorithm>
@@ -25,7 +25,8 @@ int main(){
 	init_graph1(g1);
 	init_graph2(g2);
 	// Randomly set start and end different value
-	cout << "Case for Dense Graph: " << endl;
+	//cout << "Case for Dense Graph: " << endl;
+	cout << "Number of Vertice: " << VNUM << endl;
 	start =  (rand() % VNUM) + 1;
 	do
 		end =  (rand() % VNUM) + 1;
@@ -38,21 +39,21 @@ int main(){
 	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	print_path(path);
-	cout <<"Running time: "<<  t2 - t1 << endl;
+	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	cout << endl;
 	cout << "MBP-Using Dijkstra: " << endl;
 	t1 = clock();
 	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	print_path(path);
-	cout <<"Running time: "<<  t2 - t1 << endl;
+	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	cout << endl;
 	cout << "MBP-Using Dijkstra with a heap: " << endl;
 	t1 = clock();
 	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path);
 	t2 = clock();
 	print_path(path);
-	cout <<"Running time: "<<  t2 - t1 << endl;
+	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	return 0;
 }
 // First method to initialize the graph
@@ -74,8 +75,9 @@ void init_graph1(graph<KEY_TYPE,VNUM> &g0)
 			ran_num1 = (rand() % VNUM) + 1;
 			if (!g0.is_edge(i,ran_num) && v_degree[ran_num] < DEGREE && v_degree[ran_num1] < DEGREE) 
 			{
-				g0.add_edge(ran_num1,ran_num,rand() % MAX_WEIGHT + 1);
-				//cout <<"add:" << ran_num1 << " , " << ran_num << " wt: "<<g0.edge_weight(ran_num1,ran_num)<<endl;
+			//	g0.add_edge(ran_num1,ran_num,rand() % MAX_WEIGHT + 1);
+				g0.add_edge(ran_num1,ran_num,rand()*MAX_WEIGHT/((double)(RAND_MAX)));
+			//	cout <<"add:" << ran_num1 << " , " << ran_num << " wt: "<<g0.edge_weight(ran_num1,ran_num)<<endl;
 				v_degree[ran_num] ++;
 				v_degree[ran_num1] ++;
 				count++;
@@ -95,7 +97,8 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 			ran_num = rand() % 5;
 			//20% possibility to hit
 			if (ran_num == 0 && i != j) 
-				g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
+			//	g0.add_edge(i,j,rand() % MAX_WEIGHT + 1);
+				g0.add_edge(i,j,rand()*MAX_WEIGHT/((double)(RAND_MAX)));
 		}
 
 	return;
@@ -104,12 +107,15 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 {
 	int i;
-	if (!g0.is_edge(s,1) && s != 1) g0.add_edge(s,1,rand() % MAX_WEIGHT + 1);
-	if (!g0.is_edge(t,VNUM) && t != 1) g0.add_edge(t,VNUM,rand() % MAX_WEIGHT + 1);
+	if (!g0.is_edge(s,1) && s != 1) //g0.add_edge(s,1,rand() % MAX_WEIGHT + 1);
+		g0.add_edge(s,1,rand()*MAX_WEIGHT/((double)(RAND_MAX)));
+	if (!g0.is_edge(t,VNUM) && t != 1) //g0.add_edge(t,VNUM,rand() % MAX_WEIGHT + 1);
+		g0.add_edge(t,VNUM,rand()*MAX_WEIGHT/((double)(RAND_MAX)));
 	for(i = 1; i< VNUM; i++ ) 
 	{
 		if (!g0.is_edge(i,i+1))
-			g0.add_edge(i,i+1,rand() % MAX_WEIGHT + 1);
+		//	g0.add_edge(i,i+1,rand() % MAX_WEIGHT + 1);
+			g0.add_edge(i,i+1,rand()*MAX_WEIGHT/((double)(RAND_MAX)));
 	}
 	return;
 }
