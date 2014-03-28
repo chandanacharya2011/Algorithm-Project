@@ -2,6 +2,7 @@
 #define __mbp
 
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include "edge.hpp"
 #include "heap.hpp"
@@ -23,40 +24,43 @@ template<typename key_type, int graph_size>
 void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key_type> > &path);
 
 template<typename key_type, int graph_size>
-int find_path(bool edge_flag[],adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path);
+int find_path(vector<bool> &edge_flag, adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path);
 
 //Using Kruskal to find MBP
 template<typename key_type, int graph_size>
 void mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_type> > &path)
 {
 	int i,j,edge_num = 0;
-	bool *edge_flag  =  new bool[( graph_size +1 ) * (graph_size + 1)];
+	vector<bool> edge_flag;
 	struct adj_node<key_type>  table[graph_size + 1];
-	edge<key_type>* edges = new edge<key_type>[graph_size * graph_size];
+	vector< edge<key_type> > edges;
 	struct adj_node<key_type>* temp;
 	int degree[graph_size + 1],set[graph_size + 1];
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
-	for (i = 1 ; i <= graph_size ; i ++ )
+	//FIXME DELETE THE FLAG MATRIX
+	edge_flag.reserve(( graph_size +1 ) * (graph_size + 1));
+	edges.reserve(graph_size * graph_size);
+
+	edge<key_type> temp_e;
+	for (i = 1 ; i <= graph_size /2 + 1; i ++ )
 	{
 		temp = table[i].adj_v;
 		while (temp != NULL) 
 		{
-			if ((edge_flag[i * graph_size + temp->name] == false) && (edge_flag[temp->name * graph_size + i] == false))
+			if (temp->name > i)
 			{
-				edges[edge_num].v1 = i;
-				edges[edge_num].v2 = temp->name;
-				edges[edge_num].weight = temp->weight;
+				temp_e.v1 = i;
+				temp_e.v2 = temp->name;
+				temp_e.weight = temp->weight;
+				edges[edge_num] = temp_e;
 				edge_num ++;
-				edge_flag[i * graph_size + temp->name] = true;
 			}
 			temp = temp->adj_v;
 		}
 	}
-	for (i = 1 ; i <= graph_size ; i ++ )
-		for (j = 1 ; j <= graph_size ; j ++ )
-				edge_flag[i * graph_size + j] = false;
-
+	
+	std::fill(edge_flag.begin(), edge_flag.end(), false);
 	//make set for all the vertice
 	for (i = 1 ; i <= graph_size ; i ++ ) make_set(set,degree,i);
 	
@@ -87,10 +91,11 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 	short v_flag[graph_size + 1];
 	int v_parent[graph_size + 1];
 	key_type v_parent_weight[graph_size + 1];
-	vector<int> fringe;
+	deque<int> fringe;
+	time_t t1,t2,t3=0;
 	int i,max_v;
 	struct adj_node<key_type>* temp;
-	vector<int>::iterator ii,max;
+	deque<int>::iterator ii,max,ed;
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
 	for (i = 1; i <= graph_size ; i++) 
@@ -104,13 +109,15 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 	while(!fringe.empty())
 	{
 		max = fringe.begin();
-		for (ii = fringe.begin(); ii != fringe.end() ; ii++) 
-			if  (v_table[*ii] > v_table[*max])  max = ii;
+		ed = fringe.end();
+		for (ii = fringe.begin(); ii != ed ; ii++) 
+			if  ( v_table[*ii] > v_table[*max])  max = ii;
 		max_v = *max;
 		if (max_v == t) break;
 		fringe.erase(max);
 		v_flag[max_v] = INTREE;
 		temp = table[max_v].adj_v;
+		int sum=0;
 		while(temp != NULL)
 		{
 			if (v_flag[temp->name] == UNSEEN) 
@@ -120,6 +127,7 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 				v_table[temp->name] = std::min(v_table[max_v],temp->weight);
 				v_parent[temp->name] = max_v;
 				v_parent_weight[temp->name] = temp->weight;
+				sum++;
 			}
 			else if(v_flag[temp->name] == FRINGE)
 			{
@@ -132,6 +140,7 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 			}
 			temp = temp->adj_v;
 		}
+		
 	}
 	
 	i = t;
@@ -214,7 +223,7 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edg
 }
 // Using DFS to find the path from s to t in the Maximum Spanning Tree.
 template<typename key_type, int graph_size>
-int find_path(bool edge_flag[],struct adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path)
+int find_path(vector<bool> &edge_flag,struct adj_node<key_type> table[],int s,int t,vector< edge<key_type> > &path)
 {
 	
 	struct adj_node<key_type>* temp;

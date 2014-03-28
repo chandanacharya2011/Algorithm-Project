@@ -23,7 +23,7 @@ int main(){
 	graph<KEY_TYPE,VNUM> g1,g2;
 	// Initial the graphs.
 	init_graph1(g1);
-	init_graph2(g2);
+	init_graph1(g2);
 	// Randomly set start and end different value
 	//cout << "Case for Dense Graph: " << endl;
 	cout << "Number of Vertice: " << VNUM << endl;
@@ -33,7 +33,7 @@ int main(){
 	while(start == end);
 
 	cout << "start:" << start <<", end:" << end << endl;
-	add_path(g2,start,end);
+//	add_path(g2,start,end);
 	cout << "MBP-Using KRUSKAL: " << endl;
 	t1 = clock();
 	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
@@ -103,7 +103,7 @@ void init_graph2(graph<KEY_TYPE,VNUM> &g0)
 
 	return;
 }
-// This module needs fix
+// FIXME 
 void add_path(graph<KEY_TYPE,VNUM> &g0,int s,int t)
 {
 	int i;
