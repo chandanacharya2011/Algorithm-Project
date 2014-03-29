@@ -70,7 +70,6 @@ void heap<element,MAX_SIZE,key_fun,name_fun,key_type>::heaplize(long start_index
 		swap(heap_array[max],heap_array[start_index]);
 		heaplize(max);
 	}
-	else return;
 	return;
 }
 
@@ -84,12 +83,12 @@ void  heap<element,MAX_SIZE,key_fun,name_fun,key_type>::insert(element e1)
 	long i = heap_size;
 
         while( i > 1 &&  key(heap_array[i]) > key(heap_array[i/2]) ) 
-		{
+	{
 		if(map_enable) 
 			swap(name_to_index[name(heap_array[i])],name_to_index[name(heap_array[i/2])]);
 		swap(heap_array[i],heap_array[i/2]);
 		i = i / 2;
-		}
+	}
         return;
 }
 

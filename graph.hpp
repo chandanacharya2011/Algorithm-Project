@@ -7,6 +7,16 @@ struct adj_node
 	int name;
 	key_type weight;
 	adj_node* adj_v;
+	adj_node(int name0, key_type weight0 ,adj_node*  adj_v0)
+	{
+		name = name0;
+		weight = weight0;
+		adj_v = adj_v0;
+	}
+	adj_node()
+	{
+		return;
+	}
 };
 
 //declaration
@@ -74,23 +84,16 @@ void graph<key_type,GRAPH_SIZE>::set_vertex_key(int v1, key_type key)
 template<typename key_type,int GRAPH_SIZE>
 int graph<key_type,GRAPH_SIZE>::add_edge(int v1,int v2,key_type wt)
 {
-	adj_node<key_type>* node1 = new adj_node<key_type>();
-	node1->name = v1;
-	node1->weight = wt;
-	
-	adj_node<key_type>* node2 = new adj_node<key_type>();
-	node2->name = v2;
-	node2->weight = wt;
 	
 	struct adj_node<key_type>* temp;
 	
-	temp = adj_table[v1].adj_v;
-	adj_table[v1].adj_v = node2;
-	node2->adj_v = temp;
-
 	temp = adj_table[v2].adj_v;
+	adj_node<key_type>* node1 = new adj_node<key_type>(v1,wt,temp);
 	adj_table[v2].adj_v = node1;
-	node1->adj_v = temp;
+	
+	temp = adj_table[v1].adj_v;
+	adj_node<key_type>* node2 = new adj_node<key_type>(v2,wt,temp);
+	adj_table[v1].adj_v = node2;
 	
 	e_count++;
 	return 0;

@@ -8,6 +8,16 @@ public:
 	int v2;
 	key_type weight;
 //	edge(int v1,int v2,key_type weight);
+	edge(int v10,int v20,key_type weight0)
+	{
+		v1=v10;
+		v2=v20;
+		weight = weight0;
+	}
+	edge()
+	{
+		return;
+	}
 };
 
 template<typename key_type>
