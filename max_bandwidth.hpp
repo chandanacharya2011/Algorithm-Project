@@ -32,34 +32,36 @@ void mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_t
 {
 	int i,j,edge_num = 0;
 	struct adj_node<key_type>  table[graph_size + 1];
-	struct adj_node<key_type>  edges[graph_size + 1];
+	struct adj_node<key_type>  tree_edges[graph_size + 1];
 	edge<key_type> temp_e;
+	vector< edge<key_type> > edges;
 	struct adj_node<key_type>* temp;
 	int degree[graph_size + 1],set[graph_size + 1];
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
+	edges.reserve(graph_size * graph_size);
 	heap<edge<key_type>,graph_size*graph_size,value_fun_edge<key_type>,name_fun_edge<key_type>,key_type> h0(false);
 	for (i = 1 ; i <= graph_size; i ++ )
 	{
 		temp = table[i].adj_v;
 		while (temp != NULL) 
 		{	
-			if (temp->name < i )
-			{
 				temp_e.v1 = i;
 				temp_e.v2 = temp->name;
 				temp_e.weight = temp->weight;
-				h0.insert(temp_e);
-				edge_num ++;
-			}
-			temp = temp->adj_v;
+		// Here we use this code to guide the compiler generate conditonal move instruction, which can decrease the 
+		// branch misprediction penalty. 
+				edges[(temp->name > i) ? edge_num : 0] = temp_e;
+				edge_num += (temp->name > i);
+				temp = temp->adj_v;
 		}
 	}
 
+	for (i = 1 ; i <= edge_num; i ++ ) h0.insert(edges[i]);
 	//make set for all the vertice
 	for (i = 1 ; i <= graph_size ; i ++ ) make_set(set,degree,i);
 	
-	for (i = 1 ; i <= graph_size ; i ++ ) edges[i].adj_v = NULL;
+	for (i = 1 ; i <= graph_size ; i ++ ) tree_edges[i].adj_v = NULL;
 	long edge_count = 0;
 	for(i = 0; i < edge_num ; i++ ) 
 	{
@@ -73,19 +75,19 @@ void mbp_kruskal(graph<key_type,graph_size> g0, int s, int t, vector< edge<key_t
 			adj_node<key_type>* node2 = new adj_node<key_type>();
 			node1->name = temp_e.v1;	
 			node1->weight = temp_e.weight;	
-			node1->adj_v = edges[temp_e.v2].adj_v;
+			node1->adj_v = tree_edges[temp_e.v2].adj_v;
 			node2->name = temp_e.v2;	
 			node2->weight = temp_e.weight;	
-			node2->adj_v = edges[temp_e.v1].adj_v;
-			edges[temp_e.v2].adj_v = node1;
-			edges[temp_e.v1].adj_v = node2;
+			node2->adj_v = tree_edges[temp_e.v1].adj_v;
+			tree_edges[temp_e.v2].adj_v = node1;
+			tree_edges[temp_e.v1].adj_v = node2;
 		}
 		if (edge_count == graph_size - 1 ) break;
 	}
 	bool v_flag[graph_size + 1];
 	for (i = 1 ; i <= graph_size ; i ++ ) v_flag[i] = false;
 	v_flag[s] = true;
-	find_path<key_type,graph_size>(edges,s,t,v_flag,path);
+	find_path<key_type,graph_size>(tree_edges,s,t,v_flag,path);
 	return;
 }
 //Using Dijksta to find MBP without heap.
@@ -97,11 +99,11 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 	short v_flag[graph_size + 1];
 	int v_parent[graph_size + 1];
 	key_type v_parent_weight[graph_size + 1];
-	deque<int> fringe;
+	vector<int> fringe;
 	time_t t1,t2,t3=0;
 	int i,max_v;
 	struct adj_node<key_type>* temp;
-	deque<int>::iterator ii,max,ed;
+	vector<int>::iterator ii,max,ed;
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
 	for (i = 1; i <= graph_size ; i++) 
@@ -112,7 +114,7 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 	v_table[s] = MAX_WEIGHT + 1;
 	v_flag[s] = FRINGE;
 	fringe.push_back(s);
-	while(!fringe.empty())
+	while(fringe.size())
 	{
 		max = fringe.begin();
 		ed = fringe.end();
@@ -123,20 +125,13 @@ void mbp_dijkstra(graph<key_type,graph_size> g0, int s, int t,  vector< edge<key
 		fringe.erase(max);
 		v_flag[max_v] = INTREE;
 		temp = table[max_v].adj_v;
-		int sum=0;
 		while(temp != NULL)
 		{
-			if (v_flag[temp->name] == UNSEEN) 
+			if (v_flag[temp->name] != INTREE) 
 			{
+				if (v_flag[temp->name] == UNSEEN) 
+					fringe.push_back(temp->name);
 				v_flag[temp->name] = FRINGE;
-				fringe.push_back(temp->name);
-				v_table[temp->name] = std::min(v_table[max_v],temp->weight);
-				v_parent[temp->name] = max_v;
-				v_parent_weight[temp->name] = temp->weight;
-				sum++;
-			}
-			else if(v_flag[temp->name] == FRINGE)
-			{
 				if ((temp->weight > v_table[temp->name]) && (v_table[max_v] >  v_table[temp->name]))
 				{
 					v_parent[temp->name] = max_v;
@@ -167,7 +162,7 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edg
 {
 	struct adj_node<key_type>  table[graph_size + 1];
 	short v_flag[graph_size + 1];
-	int v_parent[graph_size + 1],i;
+	int v_parent[graph_size + 1];
 	key_type v_parent_weight[graph_size + 1];
 	heap<vertex<key_type>,graph_size,value_fun<key_type>,name_fun<key_type>,key_type> fringe(true);
 	vertex<key_type> max,v1;
@@ -185,19 +180,11 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edg
 		temp = table[max.get_name()].adj_v;
 		while(temp != NULL)
 		{
-			if (v_flag[temp->name] == UNSEEN) 
+			if (v_flag[temp->name] != INTREE)
 			{
+				if (v_flag[temp->name] == UNSEEN) 
+					fringe.insert(g0.get_v(temp->name));
 				v_flag[temp->name] = FRINGE;
-				fringe.insert(g0.get_v(temp->name));
-				//Relax all the path to adjacnt vertices with the max vertex.
-				v1 = fringe.index(fringe.get_index(temp->name));
-				v1.set_key(std::min(max.get_key(),temp->weight));
-				fringe.modify_at(fringe.get_index(temp->name),v1);
-				v_parent[temp->name] = max.get_name();
-				v_parent_weight[temp->name] = temp->weight;
-			}
-			else if(v_flag[temp->name] == FRINGE)
-			{
 				if (temp->weight > (fringe.index(fringe.get_index(temp->name))).get_key() )
 				if  (max.get_key() > (fringe.index(fringe.get_index(temp->name))).get_key()  )
 				{
@@ -209,13 +196,13 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> g0, int s, int t,  vector< edg
 					fringe.modify_at(fringe.get_index(temp->name),v1);
 				}	
 			}
+
 			temp = temp->adj_v;
 		}
-			
 		v_flag[max.get_name()] = INTREE;
 		fringe.del_max();
 	}
-	i = t;
+	int i = t;
 	edge<key_type> edge_here;
 	while( i != s) 
 	{
@@ -260,10 +247,5 @@ int find_path(struct adj_node<key_type> edges[],int s,int t,bool v_flag[], vecto
 		temp = temp-> adj_v;
 	}
 	return OFF_PATH;
-
-
 }
 #endif
-
-
-

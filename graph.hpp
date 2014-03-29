@@ -21,6 +21,7 @@ private:
 public:
 	graph();
 	int add_vertex(int index, key_type key);
+	void set_vertex_key(int dex, key_type key);
 //	int del_vertex(vertex<key_type> v1);
 	int add_edge(int v1,int v2,key_type weight);
 	bool is_edge(int v1,int v2);
@@ -61,6 +62,14 @@ int graph<key_type,GRAPH_SIZE>::add_vertex(int v1, key_type key)
 	v_count ++;
 	return 0;
 }
+
+template<typename key_type,int GRAPH_SIZE>
+void graph<key_type,GRAPH_SIZE>::set_vertex_key(int v1, key_type key)
+{
+	v_table[v1].set_key(key);
+	return ;
+}
+
 
 template<typename key_type,int GRAPH_SIZE>
 int graph<key_type,GRAPH_SIZE>::add_edge(int v1,int v2,key_type wt)
