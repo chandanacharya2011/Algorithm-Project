@@ -19,11 +19,11 @@ void print_path(vector< edge<KEY_TYPE> > path);
 int main(){
 	time_t t1,t2;
 	int start,end;
-	vector< edge<KEY_TYPE> > path;
+	vector< edge<KEY_TYPE> > path1,path2,path3;
 	graph<KEY_TYPE,VNUM> g1,g2;
 	// Initial the graphs.
 	init_graph1(g1);
-	init_graph1(g2);
+	init_graph2(g2);
 	// Randomly set start and end different value
 	//cout << "Case for Dense Graph: " << endl;
 	cout << "Number of Vertice: " << VNUM << endl;
@@ -36,23 +36,23 @@ int main(){
 //	add_path(g2,start,end);
 	cout << "MBP-Using KRUSKAL: " << endl;
 	t1 = clock();
-	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path);
+	mbp_kruskal<KEY_TYPE,VNUM>(g2,start,end,path1);
 	t2 = clock();
-	print_path(path);
+	print_path(path1);
 	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	cout << endl;
 	cout << "MBP-Using Dijkstra: " << endl;
 	t1 = clock();
-	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path);
+	mbp_dijkstra<KEY_TYPE,VNUM>(g2,start,end,path2);
 	t2 = clock();
-	print_path(path);
+	print_path(path2);
 	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	cout << endl;
 	cout << "MBP-Using Dijkstra with a heap: " << endl;
 	t1 = clock();
-	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path);
+	mbp_dijkstra_heap<KEY_TYPE,VNUM>(g2,start,end,path3);
 	t2 = clock();
-	print_path(path);
+	print_path(path3);
 	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
 	return 0;
 }
