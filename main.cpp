@@ -26,6 +26,7 @@ int main(){
 	init_graph2(g2);
 	// Randomly set start and end different value
 	
+	cout << "---------------------------------------" << endl;
 
 	cout << "Number of Vertice: " << VNUM << endl;
 	start =  (rand() % VNUM) + 1;
@@ -34,6 +35,7 @@ int main(){
 	while(start == end);
 
 	cout << "start:" << start <<", end:" << end << endl;
+	cout << "---------------------------------------" << endl;
 //	add_path(g2,start,end);
 
 	cout << "Case for Sparse Graph: " << endl;
@@ -85,6 +87,7 @@ int main(){
 	t2 = clock();
 	print_path(path3);
 	cout <<"Running time: "<<  1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
+	cout << "---------------------------------------" << endl;
 	return 0;
 }
 // First method to initialize the graph

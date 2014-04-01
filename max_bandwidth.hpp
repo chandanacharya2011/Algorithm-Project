@@ -38,19 +38,17 @@ void mbp_kruskal(graph<key_type,graph_size> &g0, int s, int t, vector< edge<key_
 	int degree[graph_size + 1],set[graph_size + 1];
 	//get all the edge information from the graph.
 	g0.get_adj_table(table);
-	edges.reserve(graph_size * graph_size);
+	edges.reserve((graph_size + 1) * (1+graph_size));
 	heap<edge<key_type>,graph_size*graph_size,value_fun_edge<key_type>,name_fun_edge<key_type>,key_type> h0(false);
 	for (i = 1 ; i <= graph_size; i ++ )
-	{
-		temp = table[i].adj_v;
-		while (temp != NULL) 
-		{	
+	{ 
+		for(temp = table[i].adj_v;temp != NULL; temp = temp->adj_v)
+		{
 				temp_e = edge<key_type>(i,temp->name,temp->weight);
 		// Here we use this code to guide the compiler generate conditonal move instruction, which can decrease the 
 		// branch misprediction penalty. 
 				edges[(temp->name > i) ? edge_num : 0] = temp_e;
 				edge_num += (temp->name > i);
-				temp = temp->adj_v;
 		}
 	}
 	for (i = 1 ; i <= edge_num; i ++ ) h0.insert(edges[i]);
@@ -113,8 +111,7 @@ void mbp_dijkstra(graph<key_type,graph_size> &g0, int s, int t,  vector< edge<ke
 		if (max_v == t) break;
 		fringe.erase(max);
 		v_flag[max_v] = INTREE;
-		temp = table[max_v].adj_v;
-		while(temp != NULL)
+		for(temp = table[max_v].adj_v;temp!=NULL;temp = temp->adj_v)
 		{
 			if (v_flag[temp->name] != INTREE) 
 			{
@@ -127,20 +124,6 @@ void mbp_dijkstra(graph<key_type,graph_size> &g0, int s, int t,  vector< edge<ke
 					v_table[temp->name] = std::min(v_table[max_v],temp->weight);
 				}	
 			}
-	/*
-		//	if (v_flag[temp->name] != INTREE) 
-			{
-			#define COND ((temp->weight > v_table[temp->name]) && (v_table[max_v] >  v_table[temp->name]))
-				{
-					v_parent[ COND?temp->name:0] = max_v;
-					v_parent_weight[COND? temp->name:0] =temp->weight;
-					v_table[COND? temp->name:0] =std::min(v_table[max_v],temp->weight);
-				}	
-				if (v_flag[temp->name] == UNSEEN) fringe.push_back(temp->name);
-				v_flag[temp->name] = FRINGE;
-			}
-	*/
-			temp = temp->adj_v;
 		}
 	}
 	i = t;
@@ -174,9 +157,8 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> &g0, int s, int t,  vector< ed
 	{
 		max = fringe.max();
 		if (max.get_name() == t) break;
-		temp = table[max.get_name()].adj_v;
-		while(temp != NULL)
-		{
+		for(temp = table[max.get_name()].adj_v;temp!=NULL;temp = temp->adj_v)
+				{
 			if (v_flag[temp->name] != INTREE)
 			{
 				if (v_flag[temp->name] == UNSEEN) fringe.insert(g0.get_v(temp->name));
@@ -192,8 +174,6 @@ void mbp_dijkstra_heap(graph<key_type,graph_size> &g0, int s, int t,  vector< ed
 					fringe.modify_at(fringe.get_index(temp->name),v1);
 				}	
 			}
-
-			temp = temp->adj_v;
 		}
 		v_flag[max.get_name()] = INTREE;
 		fringe.del_max();
